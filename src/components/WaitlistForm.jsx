@@ -1,4 +1,52 @@
+import { useEffect, useRef } from 'react'
+
 function WaitlistForm() {
+  const formRef = useRef(null)
+  const formInitialized = useRef(false)
+
+  useEffect(() => {
+    // Wait for HubSpot script to load and then create form
+    const initForm = () => {
+      if (window.hbspt && formRef.current && !formInitialized.current) {
+        try {
+          window.hbspt.forms.create({
+            region: 'na2',
+            portalId: '244684440',
+            formId: '49318b89-e04e-488a-8cf9-ed653256e74d',
+            target: formRef.current
+          })
+          formInitialized.current = true
+        } catch (error) {
+          console.error('Error creating HubSpot form:', error)
+        }
+      } else if (!formInitialized.current) {
+        // Retry if script not loaded yet
+        setTimeout(initForm, 100)
+      }
+    }
+
+    // Check if script is already loaded
+    if (window.hbspt) {
+      initForm()
+    } else {
+      // Wait for script to load (it's in the HTML head with defer)
+      const checkScript = setInterval(() => {
+        if (window.hbspt) {
+          clearInterval(checkScript)
+          initForm()
+        }
+      }, 100)
+
+      // Timeout after 10 seconds
+      setTimeout(() => {
+        clearInterval(checkScript)
+        if (!formInitialized.current) {
+          console.error('HubSpot form failed to load')
+        }
+      }, 10000)
+    }
+  }, [])
+
   return (
     <section id="waitlist" className="py-20 px-6 bg-gray-50">
       <div className="max-w-2xl mx-auto">
@@ -14,14 +62,9 @@ function WaitlistForm() {
               Be the first to know when we launch
             </p>
 
-            {/* HubSpot Form Container - Using the exact embed code you provided */}
-            <div className="hubspot-form-container">
-              <div 
-                className="hs-form-frame" 
-                data-region="na2" 
-                data-form-id="49318b89-e04e-488a-8cf9-ed653256e74d" 
-                data-portal-id="244684440"
-              ></div>
+            {/* HubSpot Form Container */}
+            <div ref={formRef} className="hubspot-form-container min-h-[200px]">
+              <div className="text-gray-500 font-mono">Loading form...</div>
             </div>
 
             <p className="mt-6 text-sm text-gray-500">
