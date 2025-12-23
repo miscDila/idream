@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import GoldenTicketCard from '../components/Purchase/GoldenTicketCard'
 import PurchaseTypeSelector from '../components/Purchase/PurchaseTypeSelector'
@@ -67,29 +67,6 @@ function PurchasePage() {
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="font-mono text-5xl md:text-6xl font-bold text-gray-900 mb-4">
-            Get Your Golden Ticket
-          </h1>
-          <p className="font-mono text-2xl text-gray-700 mb-2">
-            Lifetime access to all features - $150
-          </p>
-          <p className="font-mono text-lg text-gray-600">
-            {isGift 
-              ? '🎁 Give the gift of achieving dreams - recipient gets an email with their Golden Ticket'
-              : 'Purchase for yourself or as a gift - no account needed to start'}
-          </p>
-        </div>
-
-        {!user && (
-          <div className="mb-6 p-4 bg-blue-50 border-2 border-blue-300 rounded-lg text-center">
-            <p className="font-mono text-sm text-blue-800">
-              💡 You can purchase without an account. We'll create one for you after payment, or you can{' '}
-              <Link to="/login" className="underline font-bold">sign in first</Link> if you already have an account.
-            </p>
-          </div>
-        )}
-
         <div className="grid md:grid-cols-2 gap-8">
           <div>
             <GoldenTicketCard />
@@ -103,17 +80,6 @@ function PurchasePage() {
 
               {isGift && (
                 <GiftForm recipient={giftRecipient} onChange={setGiftRecipient} />
-              )}
-
-              {!isGift && !user && (
-                <div className="mb-6 p-4 bg-amber-50 border-2 border-amber-300 rounded-lg">
-                  <p className="font-mono text-sm text-amber-800 mb-2">
-                    <strong>For yourself:</strong> We'll create an account for you using your email from Stripe checkout.
-                  </p>
-                  <p className="font-mono text-sm text-amber-800">
-                    After payment, you'll receive login instructions via email.
-                  </p>
-                </div>
               )}
 
               {error && (
