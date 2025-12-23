@@ -5,10 +5,16 @@ function WaitlistForm() {
   const formInitialized = useRef(false)
 
   useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/f6e25845-409c-473b-b003-3f6f7fa6c631',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'WaitlistForm.jsx:7',message:'WaitlistForm mounted',data:{hasHbspt:!!window.hbspt,hasFormRef:!!formRef.current},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
+    // #endregion
     // Wait for HubSpot script to load and then create form
     const initForm = () => {
       if (window.hbspt && formRef.current && !formInitialized.current) {
         try {
+          // #region agent log
+          fetch('http://127.0.0.1:7242/ingest/f6e25845-409c-473b-b003-3f6f7fa6c631',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'WaitlistForm.jsx:12',message:'Creating HubSpot form',data:{portalId:'244684440',formId:'49318b89-e04e-488a-8cf9-ed653256e74d'},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+          // #endregion
           window.hbspt.forms.create({
             region: 'na2',
             portalId: '244684440',
@@ -16,8 +22,14 @@ function WaitlistForm() {
             target: formRef.current
           })
           formInitialized.current = true
+          // #region agent log
+          fetch('http://127.0.0.1:7242/ingest/f6e25845-409c-473b-b003-3f6f7fa6c631',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'WaitlistForm.jsx:19',message:'Form created successfully',data:{initialized:formInitialized.current},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+          // #endregion
         } catch (error) {
           console.error('Error creating HubSpot form:', error)
+          // #region agent log
+          fetch('http://127.0.0.1:7242/ingest/f6e25845-409c-473b-b003-3f6f7fa6c631',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'WaitlistForm.jsx:20',message:'Form creation error',data:{error:error.message},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
+          // #endregion
         }
       } else if (!formInitialized.current) {
         // Retry if script not loaded yet
