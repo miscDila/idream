@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext'
 import GoldenTicketCard from '../components/Purchase/GoldenTicketCard'
 import PurchaseTypeSelector from '../components/Purchase/PurchaseTypeSelector'
 import GiftForm from '../components/Purchase/GiftForm'
-import { getStripe, createCheckoutSession } from '../utils/stripe'
+import { createCheckoutSession } from '../utils/stripe'
 
 function PurchasePage() {
   const [isGift, setIsGift] = useState(false)
@@ -64,7 +64,7 @@ function PurchasePage() {
     setError('')
 
     try {
-      const sessionId = await createCheckoutSession(
+      const checkoutData = await createCheckoutSession(
         isGift, 
         isGift ? {
           name: giftRecipient.name.trim(),
@@ -72,20 +72,12 @@ function PurchasePage() {
         } : null
       )
       
-      if (!sessionId) {
+      if (!checkoutData || !checkoutData.url) {
         throw new Error('Failed to create checkout session')
       }
 
-      const stripe = await getStripe()
-      if (!stripe) {
-        throw new Error('Stripe is not configured. Please check your environment variables.')
-      }
-
-      const { error: stripeError } = await stripe.redirectToCheckout({ sessionId })
-
-      if (stripeError) {
-        throw new Error(stripeError.message)
-      }
+      // Redirect directly to Stripe Checkout URL
+      window.location.href = checkoutData.url
     } catch (err) {
       console.error('Purchase error:', err)
       setError(err.message || 'Failed to start checkout. Please try again.')

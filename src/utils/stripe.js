@@ -1,32 +1,3 @@
-import { loadStripe } from '@stripe/stripe-js'
-
-const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
-
-// Only create Stripe promise if key exists and is valid
-let stripePromise = null
-
-if (stripePublishableKey && stripePublishableKey.startsWith('pk_')) {
-  stripePromise = loadStripe(stripePublishableKey)
-} else {
-  console.warn('VITE_STRIPE_PUBLISHABLE_KEY is missing or invalid')
-}
-
-export const getStripe = async () => {
-  if (!stripePublishableKey) {
-    throw new Error('Stripe publishable key is not configured. Please check your environment variables.')
-  }
-  
-  if (!stripePublishableKey.startsWith('pk_')) {
-    throw new Error('Invalid Stripe publishable key format. Key should start with "pk_".')
-  }
-
-  if (!stripePromise) {
-    stripePromise = loadStripe(stripePublishableKey)
-  }
-
-  return stripePromise
-}
-
 export const createCheckoutSession = async (isGift = false, giftRecipient = null) => {
   try {
     const response = await fetch('/api/create-checkout-session', {
@@ -56,7 +27,10 @@ export const createCheckoutSession = async (isGift = false, giftRecipient = null
     }
 
     const data = await response.json()
-    return data.sessionId
+    return {
+      sessionId: data.sessionId,
+      url: data.url
+    }
   } catch (error) {
     console.error('Checkout session error:', error)
     throw error
