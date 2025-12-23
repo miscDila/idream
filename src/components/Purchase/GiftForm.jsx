@@ -27,7 +27,10 @@ export default function GiftForm({ recipient, onChange }) {
           type="email"
           required
           value={recipient.email || ''}
-          onChange={(e) => onChange({ ...recipient, email: e.target.value })}
+          onChange={(e) => {
+            const email = e.target.value.trim()
+            onChange({ ...recipient, email })
+          }}
           className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg font-mono focus:outline-none focus:border-amber-500"
           placeholder="recipient@example.com"
         />

@@ -1,9 +1,31 @@
 import { loadStripe } from '@stripe/stripe-js'
-import { supabase } from '../lib/supabase'
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
+const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
 
-export const getStripe = () => stripePromise
+// Only create Stripe promise if key exists and is valid
+let stripePromise = null
+
+if (stripePublishableKey && stripePublishableKey.startsWith('pk_')) {
+  stripePromise = loadStripe(stripePublishableKey)
+} else {
+  console.warn('VITE_STRIPE_PUBLISHABLE_KEY is missing or invalid')
+}
+
+export const getStripe = async () => {
+  if (!stripePublishableKey) {
+    throw new Error('Stripe publishable key is not configured. Please check your environment variables.')
+  }
+  
+  if (!stripePublishableKey.startsWith('pk_')) {
+    throw new Error('Invalid Stripe publishable key format. Key should start with "pk_".')
+  }
+
+  if (!stripePromise) {
+    stripePromise = loadStripe(stripePublishableKey)
+  }
+
+  return stripePromise
+}
 
 export const createCheckoutSession = async (isGift = false, giftRecipient = null) => {
   try {

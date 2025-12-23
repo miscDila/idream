@@ -42,24 +42,53 @@ function PurchasePage() {
   }
 
   const handlePurchase = async () => {
-    if (isGift && (!giftRecipient.name || !giftRecipient.email)) {
-      setError('Please fill in all gift recipient information')
-      return
+    // Validate gift recipient info if gift purchase
+    if (isGift) {
+      const name = giftRecipient.name?.trim()
+      const email = giftRecipient.email?.trim()
+      
+      if (!name || !email) {
+        setError('Please fill in all gift recipient information')
+        return
+      }
+      
+      // Basic email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(email)) {
+        setError('Please enter a valid email address for the recipient')
+        return
+      }
     }
 
     setLoading(true)
     setError('')
 
     try {
-      const sessionId = await createCheckoutSession(isGift, isGift ? giftRecipient : null)
+      const sessionId = await createCheckoutSession(
+        isGift, 
+        isGift ? {
+          name: giftRecipient.name.trim(),
+          email: giftRecipient.email.trim()
+        } : null
+      )
+      
+      if (!sessionId) {
+        throw new Error('Failed to create checkout session')
+      }
+
       const stripe = await getStripe()
+      if (!stripe) {
+        throw new Error('Stripe is not configured. Please check your environment variables.')
+      }
+
       const { error: stripeError } = await stripe.redirectToCheckout({ sessionId })
 
       if (stripeError) {
         throw new Error(stripeError.message)
       }
     } catch (err) {
-      setError(err.message || 'Failed to start checkout')
+      console.error('Purchase error:', err)
+      setError(err.message || 'Failed to start checkout. Please try again.')
       setLoading(false)
     }
   }
