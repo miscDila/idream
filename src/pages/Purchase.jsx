@@ -42,22 +42,20 @@ function PurchasePage() {
   }
 
   const handlePurchase = async () => {
-    // Validate gift recipient info if gift purchase
-    if (isGift) {
-      const name = giftRecipient.name?.trim()
-      const email = giftRecipient.email?.trim()
-      
-      if (!name || !email) {
-        setError('Please fill in all gift recipient information')
-        return
-      }
-      
-      // Basic email validation
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!emailRegex.test(email)) {
-        setError('Please enter a valid email address for the recipient')
-        return
-      }
+    // Validate recipient info (required for both self and gift purchases)
+    const name = giftRecipient.name?.trim()
+    const email = giftRecipient.email?.trim()
+    
+    if (!name || !email) {
+      setError(`Please fill in all ${isGift ? 'gift recipient' : 'your'} information`)
+      return
+    }
+    
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      setError('Please enter a valid email address')
+      return
     }
 
     setLoading(true)
@@ -66,10 +64,10 @@ function PurchasePage() {
     try {
       const checkoutData = await createCheckoutSession(
         isGift, 
-        isGift ? {
+        {
           name: giftRecipient.name.trim(),
           email: giftRecipient.email.trim()
-        } : null
+        }
       )
       
       if (!checkoutData || !checkoutData.url) {
@@ -99,9 +97,7 @@ function PurchasePage() {
             <div className="relative z-10">
               <PurchaseTypeSelector isGift={isGift} onChange={setIsGift} />
 
-              {isGift && (
-                <GiftForm recipient={giftRecipient} onChange={setGiftRecipient} />
-              )}
+              <GiftForm recipient={giftRecipient} onChange={setGiftRecipient} isGift={isGift} />
 
               {error && (
                 <div className="mb-6 bg-red-50 border-2 border-red-300 rounded-lg p-3">
