@@ -23,11 +23,6 @@ function Hero() {
         <div className="absolute inset-0 grid-paper-section opacity-30"></div>
         
         <div className="relative z-10 max-w-6xl mx-auto px-6 py-20 text-center">
-          {/* Christmas Delivery Badge - Sticky Note Style */}
-          <div className="inline-block mb-6 px-4 py-2 bg-red-100 border-2 border-red-300 rounded-lg transform rotate-[2deg] shadow-md fade-in">
-            <span className="font-mono text-2xl text-red-800">🎄 Virtual Delivery by Christmas</span>
-          </div>
-          
           {/* Main Headline - Font Mono */}
           <h1 className="font-mono text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-gray-900 fade-in slide-up">
             Turn Your Dreams
