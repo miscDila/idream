@@ -5,9 +5,6 @@ export default function GoldenTicketCard() {
       
       <div className="relative z-10">
         <div className="text-center mb-6">
-          <div className="inline-block px-4 py-2 bg-red-100 border-2 border-red-300 rounded-lg mb-2 transform rotate-1">
-            <span className="font-mono text-sm font-bold text-red-800">🎄 Virtual Delivery by Christmas</span>
-          </div>
           <div className="inline-block px-4 py-2 bg-amber-200 border-2 border-amber-400 rounded-lg mb-4">
             <span className="font-mono text-sm font-bold text-amber-900">LIFETIME ACCESS</span>
           </div>
